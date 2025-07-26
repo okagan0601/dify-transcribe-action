@@ -23,14 +23,14 @@ jobs:
           make
           bash ./models/download-ggml-model.sh base.en
           
-          # ステップ3：文字起こしを実行 ★★★ログの指示通りに修正★★★
+          # ステップ3：文字起こしを実行
           ./build/bin/whisper-cli -m models/ggml-base.en.bin -f ../audio.mp3 -otxt
           
-          # ステップ4：テキストを整形
+          # ステップ4：テキストを整形 ★★★ここを修正★★★
           cd ..
           echo "## 文字起こし結果" > output.md
           echo "" >> output.md
-          cat whisper.cpp/audio.txt.txt >> output.md
+          cat audio.mp3.txt >> output.md
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
