@@ -1,0 +1,37 @@
+name: Transcribe MP3 to Word
+
+on:
+  repository_dispatch:
+    types: [transcribe_mp3]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build whisper.cpp
+        run: |
+          git clone https://github.com/ggerganov/whisper.cpp.git
+          cd whisper.cpp
+          make base.en # 英語用の基本モデルをダウンロード・ビルドします
+
+      - name: Download MP3 file
+        run: wget -O audio.mp3 "${{ github.event.client_payload.mp3_url }}"
+
+      - name: Transcribe audio
+        run: ./whisper.cpp/main -m ./whisper.cpp/models/ggml-base.en.bin -f audio.mp3 -otxt
+
+      - name: Format output text
+        run: |
+          echo "## 文字起こし結果" > output.md
+          echo "" >> output.md
+          cat audio.txt.txt >> output.md
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: transcribed-text
+          path: output.md
