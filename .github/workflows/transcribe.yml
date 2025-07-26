@@ -1,4 +1,4 @@
-name: Transcribe MP3 to Word
+name: Transcribe MP3 to Text
 
 on:
   repository_dispatch:
@@ -16,19 +16,21 @@ jobs:
         run: |
           git clone https://github.com/ggerganov/whisper.cpp.git
           cd whisper.cpp
-          make base.en # 英語用の基本モデルをダウンロード・ビルドします
+          make base.en
 
       - name: Download MP3 file
         run: wget -O audio.mp3 "${{ github.event.client_payload.mp3_url }}"
 
       - name: Transcribe audio
-        run: ./whisper.cpp/main -m whisper.cpp/models/ggml-base.en.bin -f audio.mp3 -otxt
+        run: |
+          cd whisper.cpp
+          ./main -m models/ggml-base.en.bin -f ../audio.mp3 -otxt
 
       - name: Format output text
         run: |
           echo "## 文字起こし結果" > output.md
           echo "" >> output.md
-          cat audio.txt.txt >> output.md
+          cat whisper.cpp/audio.txt.txt >> output.md
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
