@@ -22,7 +22,7 @@ jobs:
         run: wget -O audio.mp3 "${{ github.event.client_payload.mp3_url }}"
 
       - name: Transcribe audio
-        run: ./whisper.cpp/main -m ./whisper.cpp/models/ggml-base.en.bin -f audio.mp3 -otxt
+        run: ./whisper.cpp/main -m whisper.cpp/models/ggml-base.en.bin -f audio.mp3 -otxt
 
       - name: Format output text
         run: |
