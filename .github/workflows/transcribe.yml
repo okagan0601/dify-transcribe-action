@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download, Build, Transcribe, and Format
+      - name: Download, Build, and Transcribe
         run: |
           # ステップ1：MP3ファイルをダウンロード
           wget -O audio.mp3 "${{ github.event.client_payload.mp3_url }}"
@@ -21,12 +21,15 @@ jobs:
           git clone https://github.com/ggerganov/whisper.cpp.git
           cd whisper.cpp
           make
-          bash ./models/download-ggml-model.sh base.en
           
-          # ステップ3：文字起こしを実行
+          # ★★★★★ デバッグ用に追加 ★★★★★
+          echo "--- Listing files in whisper.cpp directory to debug ---"
+          ls -l
+          # ★★★★★ ここまで ★★★★★
+          
+          bash ./models/download-ggml-model.sh base.en
           ./main -m models/ggml-base.en.bin -f ../audio.mp3 -otxt
           
-          # ステップ4：テキストを整形
           cd ..
           echo "## 文字起こし結果" > output.md
           echo "" >> output.md
