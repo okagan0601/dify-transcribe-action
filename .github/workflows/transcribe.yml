@@ -17,16 +17,16 @@ jobs:
           # ステップ1：MP3ファイルをダウンロード
           wget -O audio.mp3 "${{ github.event.client_payload.mp3_url }}"
           
-          # ステップ2：whisper.cppを準備
+          # ステップ2：whisper.cppを準備 ★★★モデルを多言語版に変更★★★
           git clone https://github.com/ggerganov/whisper.cpp.git
           cd whisper.cpp
           make
-          bash ./models/download-ggml-model.sh base.en
+          bash ./models/download-ggml-model.sh base
           
-          # ステップ3：文字起こしを実行
-          ./build/bin/whisper-cli -m models/ggml-base.en.bin -f ../audio.mp3 -otxt
+          # ステップ3：文字起こしを実行 ★★★モデルファイル名と言語指定を変更★★★
+          ./build/bin/whisper-cli -m models/ggml-base.bin -f ../audio.mp3 -otxt -l ja
           
-          # ステップ4：テキストを整形 ★★★ここを修正★★★
+          # ステップ4：テキストを整形
           cd ..
           echo "## 文字起こし結果" > output.md
           echo "" >> output.md
