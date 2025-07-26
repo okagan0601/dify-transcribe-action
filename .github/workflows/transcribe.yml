@@ -12,11 +12,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build whisper.cpp
+      - name: Build whisper.cpp and Download Model
         run: |
           git clone https://github.com/ggerganov/whisper.cpp.git
           cd whisper.cpp
-          make base.en
+          make
+          bash ./models/download-ggml-model.sh base.en
 
       - name: Download MP3 file
         run: wget -O audio.mp3 "${{ github.event.client_payload.mp3_url }}"
